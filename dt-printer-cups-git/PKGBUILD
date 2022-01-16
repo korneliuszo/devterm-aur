@@ -29,7 +29,7 @@ build() {
 package() {
   cd "$srcdir/devterm-printer"
   install -Dm755 cups_trytytka "${pkgdir}"/usr/lib/cups/filter/cups_trytytka
-  install -Dm644 ppd/cpi58_kernel.ppd "${pkgdir}"/usr/share/ppd/cpi/cpi58_kernel.ppd
+  install -Dm644 ppd/cpi58_kernel.ppd "${pkgdir}"/usr/share/cups/model/cpi58_kernel.ppd
 
   
 }
