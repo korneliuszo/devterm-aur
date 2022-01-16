@@ -1,0 +1,32 @@
+# Maintainer: foo <foo(at)example(dot)org>
+# Contributor: bar <bar(at)example(dot)org>
+
+_pkgbase=dt-printer
+pkgname=dt-printer-python-git
+pkgver=1.0.r0.g415b6ec
+pkgrel=1
+pkgdesc="mtp02 python utilies"
+arch=('aarch64')
+url="https://github.com/korneliuszo/devterm-printer/"
+license=('GPL2')
+depends=('python' 'python-pillow')
+conflicts=("${_pkgbase}")
+install=
+source=("devterm-printer::git+https://github.com/korneliuszo/devterm-printer#branch=master")
+
+sha256sums=('SKIP')
+
+pkgver() {
+  cd "$srcdir/devterm-printer"
+  git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+package() {
+
+  cd "$srcdir/devterm-printer"
+
+  install -Dm644 mtp02_ioctl.py "${pkgdir}"/usr/lib/python3.10/mtp02_ioctl.py
+  install -Dm755 bwprint.py "${pkgdir}"/usr/bin/mtp02_bwprint.py
+  install -Dm755 grayprint.py "${pkgdir}"/usr/bin/mtp02_grayprint.py
+  install -Dm755 grayhitherprint.py "${pkgdir}"/usr/bin/mtp02_grayhitherprint.py
+}
