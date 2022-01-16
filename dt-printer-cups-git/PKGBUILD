@@ -1,0 +1,35 @@
+# Maintainer: foo <foo(at)example(dot)org>
+# Contributor: bar <bar(at)example(dot)org>
+
+_pkgbase=dt-printer
+pkgname=dt-printer-cups-git
+pkgver=1.0.r0.g415b6ec
+pkgrel=1
+pkgdesc="DT printer cups"
+arch=('aarch64')
+url="https://github.com/korneliuszo/devterm-printer/"
+license=('GPL2')
+makedepends=('cups')
+conflicts=("${_pkgbase}")
+install=
+source=("devterm-printer::git+https://github.com/korneliuszo/devterm-printer#branch=master")
+
+sha256sums=('SKIP')
+
+pkgver() {
+  cd "$srcdir/devterm-printer"
+  git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+  cd "$srcdir/devterm-printer"
+  ppdc cpi.drv
+}
+
+package() {
+  cd "$srcdir/devterm-printer"
+  install -Dm755 cups_trytytka "${pkgdir}"/usr/lib/cups/filter/cups_trytytka
+  install -Dm644 ppd/cpi58_kernel.ppd "${pkgdir}"/usr/share/ppd/cpi/cpi58_kernel.ppd
+
+  
+}
