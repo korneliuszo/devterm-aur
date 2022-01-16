@@ -1,0 +1,5 @@
+post_install() {
+	echo "For A06 add:"
+	echo "FDTOVERLAYS /overlays/mtp02-a06-devterm.dtbo"
+	echo "to /boot/extlinux/extlinux.conf"
+}

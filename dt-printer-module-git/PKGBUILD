@@ -1,0 +1,48 @@
+# Maintainer: foo <foo(at)example(dot)org>
+# Contributor: bar <bar(at)example(dot)org>
+
+_pkgbase=dt-printer
+pkgname=dt-printer-module-git
+pkgver=1.0.r0.g415b6ec
+pkgrel=1
+pkgdesc="DT kernel module (DKMS)"
+arch=('aarch64')
+url="https://github.com/korneliuszo/devterm-printer/"
+license=('GPL2')
+depends=('dkms')
+conflicts=("${_pkgbase}")
+install=${pkgname}.install
+source=("devterm-printer::git+https://github.com/korneliuszo/devterm-printer#branch=master"
+        'dkms.conf'
+	'dkms.post_build'
+	'dkms.post_install'
+	'dkms.post_remove')
+
+sha256sums=('SKIP'
+            '4e804835b27512463acc2ec3ac067b606dfca629f12d79df7825c9410db032a9'
+            'ab886eb867ab74a8e56aaaddaa6ce694d545dac0375822e2cff6694c8e018c7c'
+            '8a6c8ad6feba3c4f5e0de2c5056dfd1a0e9d3e989fe861a04982cfa0ff378dd7'
+            '5425a955a79c47dd572ef2bf465c6e186d84746171a911f626af6a445c7078ba')
+
+pkgver() {
+  cd "$srcdir/devterm-printer"
+  git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+package() {
+  # Copy dkms.conf
+  install -Dm644 dkms.conf "${pkgdir}"/usr/src/${_pkgbase}-${pkgver}/dkms.conf
+  install -Dm755 dkms.post_build "${pkgdir}"/usr/src/${_pkgbase}-${pkgver}/dkms.post_build
+  install -Dm755 dkms.post_install "${pkgdir}"/usr/src/${_pkgbase}-${pkgver}/dkms.post_install
+  install -Dm755 dkms.post_remove "${pkgdir}"/usr/src/${_pkgbase}-${pkgver}/dkms.post_remove
+
+  # Set name and version
+  sed -e "s/@_PKGBASE@/${_pkgbase}/" \
+      -e "s/@PKGVER@/${pkgver}/" \
+      -i "${pkgdir}"/usr/src/${_pkgbase}-${pkgver}/dkms.conf
+
+  cd "$srcdir/devterm-printer"
+
+  # Copy sources (including Makefile)
+  cp -r * "${pkgdir}"/usr/src/${_pkgbase}-${pkgver}/
+}
